@@ -1,0 +1,113 @@
+---
+// Foto1.astro - Dos fotos estilo polaroid superpuestas con píldora de reacciones
+---
+
+<section class="relative w-full py-16 md:py-20 px-6 overflow-hidden">
+    <!-- Contenedor de las polaroids -->
+    <div
+        class="relative max-w-sm md:max-w-md mx-auto h-[400px] md:h-[460px] z-10"
+        id="foto1-wrapper"
+    >
+        <!-- Foto 1 (arriba - izquierda) -->
+        <div
+            id="polaroid-1"
+            class="absolute top-0 left-0 w-[64%] bg-white p-2.5 pb-3 rounded-sm shadow-2xl -rotate-6"
+        >
+            <img
+                src="/imagenes/foto1.webp"
+                alt="Leonardo Javier y Andrea"
+                class="w-full h-44 md:h-52 object-cover rounded-sm"
+            />
+        </div>
+
+        <!-- Foto 2 (abajo - derecha) -->
+        <div
+            id="polaroid-2"
+            class="absolute bottom-0 right-0 w-[64%] bg-white p-2.5 pb-3 rounded-sm shadow-2xl rotate-6 z-20"
+        >
+            <img
+                src="/imagenes/foto2.webp"
+                alt="Leonardo Javier y Andrea"
+                class="w-full h-44 md:h-52 object-cover rounded-sm"
+            />
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 🎬 ANIMACIONES CON GSAP                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const initFoto1 = () => {
+        console.log("📷 Iniciando componente Foto1...");
+
+        // ═══ ESTADO INICIAL ═══
+        gsap.set("#polaroid-1", { opacity: 0, x: -50, y: -25, rotation: -18 });
+        gsap.set("#polaroid-2", { opacity: 0, x: 50, y: 25, rotation: 18 });
+
+        // ═══ ANIMACIÓN AL ENTRAR ═══
+        ScrollTrigger.create({
+            trigger: "#foto1-wrapper",
+            start: "top 80%",
+            end: "top 20%",
+
+            onEnter: () => {
+                const tl = gsap.timeline();
+
+                tl.to(
+                    "#polaroid-1",
+                    {
+                        opacity: 1,
+                        x: 0,
+                        y: 0,
+                        rotation: -6,
+                        duration: 1.2,
+                        ease: "power3.out",
+                    },
+                    0,
+                )
+                    .to(
+                        "#polaroid-2",
+                        {
+                            opacity: 1,
+                            x: 0,
+                            y: 0,
+                            rotation: 6,
+                            duration: 1.2,
+                            ease: "power3.out",
+                        },
+                        0.2,
+                    );
+            },
+
+            onLeaveBack: () => {
+                gsap.to("#polaroid-1", {
+                    opacity: 0,
+                    x: -50,
+                    y: -25,
+                    rotation: -18,
+                    duration: 0.5,
+                    ease: "power2.in",
+                });
+                gsap.to("#polaroid-2", {
+                    opacity: 0,
+                    x: 50,
+                    y: 25,
+                    rotation: 18,
+                    duration: 0.5,
+                    ease: "power2.in",
+                });
+            },
+        });
+
+        console.log("📷✨ Componente Foto1 activado!");
+    };
+
+    document.addEventListener("DOMContentLoaded", initFoto1);
+    document.addEventListener("astro:page-load", initFoto1);
+</script>
